@@ -17,7 +17,7 @@ class StudyTimerPro:
         
         # Load saved position
         pos = self.config.get("position")
-        self.root.geometry(f"320x110+{pos['x']}+{pos['y']}")
+        self.root.geometry(f"340x130+{pos['x']}+{pos['y']}")
         self.root.title("")
         self.root.attributes('-topmost', True)
         self.root.overrideredirect(True)
@@ -92,14 +92,23 @@ class StudyTimerPro:
         
         # Timer display (large, centered)
         timer_container = tk.Frame(self.title_bar, bg=self.theme["bg"])
-        timer_container.pack(fill="x", padx=10, pady=5)
+        timer_container.pack(fill="x", padx=10, pady=8)
         
         self.timer_label = tk.Label(timer_container, text="00:00:00",
-                                    font=("Consolas", 32, "bold"),
-                                    bg=self.theme["bg"], fg=self.theme["glow"])
+                                    font=("Consolas", 36, "bold"),
+                                    bg=self.theme["bg"], fg=self.theme["timer"])
         self.timer_label.pack()
         self.timer_label.bind("<Button-1>", self.start_drag)
         self.timer_label.bind("<B1-Motion>", self.on_drag)
+        
+        # Time breakdown (hours, minutes, seconds)
+        breakdown_frame = tk.Frame(self.title_bar, bg=self.theme["bg"])
+        breakdown_frame.pack(pady=3)
+        
+        self.breakdown_label = tk.Label(breakdown_frame, text="0h 0m 0s",
+                                        font=("Segoe UI", 9),
+                                        bg=self.theme["bg"], fg=self.theme["accent"])
+        self.breakdown_label.pack()
         
         # Stats bar at bottom
         stats_bar = tk.Frame(self.title_bar, bg=self.theme["secondary"], height=2)
@@ -192,34 +201,45 @@ class StudyTimerPro:
         self.reset_btn.pack(side="left", padx=3)
     
     def setup_presets_tab(self):
-        tk.Label(self.presets_tab, text="Quick Start", bg=self.theme["bg"],
-                fg=self.theme["fg"], font=("Segoe UI", 10, "bold")).pack(pady=10)
+        tk.Label(self.presets_tab, text="Quick Start Presets", bg=self.theme["bg"],
+                fg=self.theme["fg"], font=("Segoe UI", 11, "bold")).pack(pady=10)
         
         presets = [
-            ("15 min", 0.25),
-            ("25 min (Pomodoro)", 25/60),
-            ("30 min", 0.5),
-            ("1 hour", 1),
-            ("2 hours", 2),
-            ("5 hours", 5)
+            ("🍅 Pomodoro", 25, "25 min"),
+            ("☕ Short Break", 5, "5 min"),
+            ("🌟 Long Break", 15, "15 min"),
+            ("🎯 Deep Work", 90, "1.5 hrs"),
+            ("📚 Quick Study", 45, "45 min"),
+            ("⏰ Power Hour", 60, "1 hr"),
+            ("🚀 Sprint", 30, "30 min")
         ]
         
-        for text, hours in presets:
-            btn = tk.Button(self.presets_tab, text=text,
-                          command=lambda h=hours: self.quick_start(h),
-                          bg=self.theme["accent"], fg="white", relief="flat",
-                          font=("Segoe UI", 9), cursor="hand2", width=20)
-            btn.pack(pady=3)
-        
-        # Pomodoro section
-        tk.Label(self.presets_tab, text="Pomodoro Mode", bg=self.theme["bg"],
-                fg=self.theme["fg"], font=("Segoe UI", 10, "bold")).pack(pady=10)
-        
-        pomo_btn = tk.Button(self.presets_tab, text="🍅 Start Pomodoro",
-                            command=self.start_pomodoro,
-                            bg=self.theme["danger"], fg="white", relief="flat",
-                            font=("Segoe UI", 9), cursor="hand2", width=20)
-        pomo_btn.pack(pady=5)
+        for emoji_text, minutes, duration in presets:
+            btn_frame = tk.Frame(self.presets_tab, bg=self.theme["secondary"])
+            btn_frame.pack(fill="x", padx=10, pady=3)
+            
+            btn = tk.Button(btn_frame, text=emoji_text,
+                          command=lambda m=minutes: self.quick_start(m/60),
+                          bg=self.theme["secondary"], fg=self.theme["fg"], 
+                          relief="flat", font=("Segoe UI", 10), 
+                          cursor="hand2", anchor="w", width=18)
+            btn.pack(side="left", padx=5, pady=5)
+            
+            time_label = tk.Label(btn_frame, text=duration,
+                                 bg=self.theme["secondary"], fg=self.theme["accent"],
+                                 font=("Segoe UI", 9, "bold"))
+            time_label.pack(side="right", padx=10, pady=5)
+            
+            # Hover effects
+            def on_enter(e, f=btn_frame):
+                f.configure(bg=self.theme["accent"])
+            def on_leave(e, f=btn_frame):
+                f.configure(bg=self.theme["secondary"])
+            
+            btn_frame.bind("<Enter>", on_enter)
+            btn_frame.bind("<Leave>", on_leave)
+            btn.bind("<Enter>", on_enter)
+            btn.bind("<Leave>", on_leave)
     
     def setup_stats_tab(self):
         stats_frame = tk.Frame(self.stats_tab, bg=self.theme["bg"])
@@ -273,7 +293,7 @@ class StudyTimerPro:
         
         self.theme_var = tk.StringVar(value=self.config.get("theme"))
         theme_combo = ttk.Combobox(settings_frame, textvariable=self.theme_var,
-                                   values=["cyberpunk", "neon", "matrix", "synthwave", "dark", "arctic"],
+                                   values=["midnight", "sunrise", "forest", "coffee", "ocean", "minimal"],
                                    state="readonly", width=15)
         theme_combo.grid(row=0, column=1, pady=5)
         theme_combo.bind("<<ComboboxSelected>>", self.change_theme)
@@ -340,11 +360,11 @@ class StudyTimerPro:
     def toggle_controls(self, event=None):
         if self.minimized:
             self.controls_frame.pack(fill="both", expand=True)
-            self.root.geometry("320x420")
+            self.root.geometry("340x450")
             self.minimized = False
         else:
             self.controls_frame.pack_forget()
-            self.root.geometry("320x110")
+            self.root.geometry("340x130")
             self.minimized = True
     
     def toggle_timer(self):
@@ -453,13 +473,16 @@ class StudyTimerPro:
             time_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
             self.timer_label.config(text=time_str)
             
+            # Update breakdown
+            self.breakdown_label.config(text=f"{hours}h {minutes}m {seconds}s")
+            
             # Color changes
             if remaining <= 60:
                 self.timer_label.config(fg=self.theme["danger"])
             elif remaining <= 300:
                 self.timer_label.config(fg=self.theme["warning"])
             else:
-                self.timer_label.config(fg=self.theme["fg"])
+                self.timer_label.config(fg=self.theme["timer"])
         
         self.root.after(1000, self.update_display)
     
@@ -593,7 +616,8 @@ Created for focused studying."""
         
         # Labels
         self.clock_label.configure(bg=self.theme["bg"], fg=self.theme["accent"])
-        self.timer_label.configure(bg=self.theme["bg"], fg=self.theme["glow"])
+        self.timer_label.configure(bg=self.theme["bg"], fg=self.theme["timer"])
+        self.breakdown_label.configure(bg=self.theme["bg"], fg=self.theme["accent"])
         self.stats_label.configure(bg=self.theme["bg"], fg=self.theme["accent"])
         self.settings_btn.configure(bg=self.theme["bg"], fg=self.theme["glow"])
         self.close_btn.configure(bg=self.theme["bg"], fg=self.theme["glow"])

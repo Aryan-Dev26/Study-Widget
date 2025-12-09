@@ -1,65 +1,77 @@
 THEMES = {
-    "cyberpunk": {
-        "bg": "#0a0e27",
-        "fg": "#00ff9f",
-        "accent": "#ff006e",
-        "secondary": "#1a1f3a",
-        "success": "#00ff9f",
-        "warning": "#ffbe0b",
-        "danger": "#ff006e",
-        "glow": "#00ff9f"
+    "midnight": {
+        "name": "Midnight Focus",
+        "bg": "#1e1b4b",  # Deep purple-blue
+        "fg": "#dbeafe",  # Light blue
+        "accent": "#a78bfa",  # Purple
+        "secondary": "#312e81",  # Darker purple
+        "success": "#a78bfa",
+        "warning": "#fbbf24",
+        "danger": "#ef4444",
+        "glow": "#a78bfa",
+        "timer": "#93c5fd"  # Light blue for timer
     },
-    "neon": {
-        "bg": "#0d0221",
-        "fg": "#7df9ff",
-        "accent": "#ff10f0",
-        "secondary": "#1a0b2e",
-        "success": "#39ff14",
-        "warning": "#ffaa00",
-        "danger": "#ff0080",
-        "glow": "#7df9ff"
+    "sunrise": {
+        "name": "Sunrise Energy",
+        "bg": "#fff7ed",  # Warm cream
+        "fg": "#1f2937",  # Dark gray
+        "accent": "#ea580c",  # Orange
+        "secondary": "#fed7aa",  # Light orange
+        "success": "#ea580c",
+        "warning": "#f59e0b",
+        "danger": "#dc2626",
+        "glow": "#fb923c",
+        "timer": "#c2410c"  # Deep orange
     },
-    "matrix": {
-        "bg": "#000000",
-        "fg": "#00ff00",
-        "accent": "#00ff00",
-        "secondary": "#0a0a0a",
-        "success": "#00ff00",
-        "warning": "#ffff00",
-        "danger": "#ff0000",
-        "glow": "#00ff00"
+    "forest": {
+        "name": "Forest Calm",
+        "bg": "#064e3b",  # Deep green
+        "fg": "#d1fae5",  # Light mint
+        "accent": "#34d399",  # Bright green
+        "secondary": "#065f46",  # Medium green
+        "success": "#10b981",
+        "warning": "#fbbf24",
+        "danger": "#ef4444",
+        "glow": "#34d399",
+        "timer": "#6ee7b7"  # Mint green
     },
-    "synthwave": {
-        "bg": "#2b213a",
-        "fg": "#f9f2e7",
-        "accent": "#ff6c11",
-        "secondary": "#3d2e4f",
-        "success": "#72dec2",
-        "warning": "#ffd319",
-        "danger": "#fe4450",
-        "glow": "#ff6c11"
+    "coffee": {
+        "name": "Coffee Break",
+        "bg": "#fef3c7",  # Light cream
+        "fg": "#78350f",  # Dark brown
+        "accent": "#d97706",  # Amber
+        "secondary": "#fde68a",  # Light yellow
+        "success": "#d97706",
+        "warning": "#f59e0b",
+        "danger": "#dc2626",
+        "glow": "#f59e0b",
+        "timer": "#92400e"  # Deep brown
     },
-    "dark": {
-        "bg": "#0f0f0f",
-        "fg": "#e0e0e0",
-        "accent": "#4a9eff",
-        "secondary": "#1a1a1a",
-        "success": "#4caf50",
-        "warning": "#ffa500",
-        "danger": "#ff6b6b",
-        "glow": "#4a9eff"
+    "ocean": {
+        "name": "Ocean Depth",
+        "bg": "#0c4a6e",  # Deep blue
+        "fg": "#cffafe",  # Light cyan
+        "accent": "#22d3ee",  # Bright cyan
+        "secondary": "#075985",  # Medium blue
+        "success": "#06b6d4",
+        "warning": "#fbbf24",
+        "danger": "#ef4444",
+        "glow": "#22d3ee",
+        "timer": "#67e8f9"  # Light cyan
     },
-    "arctic": {
-        "bg": "#0c1821",
-        "fg": "#c0e0ff",
-        "accent": "#00d9ff",
-        "secondary": "#1b2a3a",
-        "success": "#00ffc8",
-        "warning": "#ffd700",
-        "danger": "#ff4757",
-        "glow": "#00d9ff"
+    "minimal": {
+        "name": "Minimal Dark",
+        "bg": "#111827",  # Very dark gray
+        "fg": "#f3f4f6",  # Light gray
+        "accent": "#9ca3af",  # Medium gray
+        "secondary": "#1f2937",  # Dark gray
+        "success": "#6b7280",
+        "warning": "#9ca3af",
+        "danger": "#ef4444",
+        "glow": "#6b7280",
+        "timer": "#d1d5db"  # Light gray
     }
 }
 
 def get_theme(theme_name):
-    return THEMES.get(theme_name, THEMES["dark"])
+    return THEMES.get(theme_name, THEMES["midnight"])

@@ -6,9 +6,9 @@ class Config:
     def __init__(self):
         self.config_file = "study_timer_config.json"
         self.default_config = {
-            "theme": "cyberpunk",
-            "opacity": 0.92,
-            "font_size": 32,
+            "theme": "midnight",
+            "opacity": 0.95,
+            "font_size": 36,
             "position": {"x": 100, "y": 100},
             "timezone": "Local",
             "sound_enabled": True,

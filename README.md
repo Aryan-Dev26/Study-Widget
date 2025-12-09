@@ -94,21 +94,24 @@ python study_timer_pro.py
 4. Check your streak and level
 5. Export data with "📊 Export CSV"
 
-## 🎨 Futuristic Themes
+## 🎨 Beautiful Themes
 
-Choose from 6 stunning futuristic themes with live switching (no restart needed):
-- **Cyberpunk** - Neon green on dark with pink accents (default)
-- **Neon** - Electric cyan and magenta vibes
-- **Matrix** - Classic green-on-black hacker aesthetic
-- **Synthwave** - Retro 80s sunset colors
-- **Dark** - Sleek minimal dark with blue accents
-- **Arctic** - Cool blue tones with ice-like glow
+Choose from 6 stunning themes with instant switching (no restart needed):
+
+- **🌙 Midnight Focus** - Deep purple-blue gradient for late-night study sessions (default)
+- **🌅 Sunrise Energy** - Warm orange and cream tones for morning motivation
+- **🌲 Forest Calm** - Soothing green shades for peaceful concentration
+- **☕ Coffee Break** - Cozy amber and cream for comfortable studying
+- **🌊 Ocean Depth** - Cool cyan and blue for deep focus
+- **⚫ Minimal Dark** - Clean grayscale for distraction-free work
 
 All themes feature:
 - Glowing borders that pulse when timer is active
 - Smooth color transitions
-- Hover effects on buttons
+- Hover effects on preset buttons
 - Instant theme switching without restart
+- Optimized color contrast for readability
+- Time breakdown display (hours, minutes, seconds)
 
 ## 🌍 Supported Timezones
 
