@@ -94,15 +94,21 @@ python study_timer_pro.py
 4. Check your streak and level
 5. Export data with "📊 Export CSV"
 
-## 🎨 Themes
+## 🎨 Futuristic Themes
 
-Choose from 6 professionally designed themes:
-- **Dark** - Classic dark mode (default)
-- **Light** - Clean light theme
-- **Blue** - Ocean-inspired
-- **Green** - Nature-focused
-- **Purple** - Creative vibes
-- **Nord** - Popular Nordic palette
+Choose from 6 stunning futuristic themes with live switching (no restart needed):
+- **Cyberpunk** - Neon green on dark with pink accents (default)
+- **Neon** - Electric cyan and magenta vibes
+- **Matrix** - Classic green-on-black hacker aesthetic
+- **Synthwave** - Retro 80s sunset colors
+- **Dark** - Sleek minimal dark with blue accents
+- **Arctic** - Cool blue tones with ice-like glow
+
+All themes feature:
+- Glowing borders that pulse when timer is active
+- Smooth color transitions
+- Hover effects on buttons
+- Instant theme switching without restart
 
 ## 🌍 Supported Timezones
 

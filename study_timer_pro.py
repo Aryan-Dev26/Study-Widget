@@ -17,7 +17,7 @@ class StudyTimerPro:
         
         # Load saved position
         pos = self.config.get("position")
-        self.root.geometry(f"280x100+{pos['x']}+{pos['y']}")
+        self.root.geometry(f"320x110+{pos['x']}+{pos['y']}")
         self.root.title("")
         self.root.attributes('-topmost', True)
         self.root.overrideredirect(True)
@@ -35,6 +35,10 @@ class StudyTimerPro:
         self.pomodoro_mode = False
         self.is_break = False
         self.pomodoro_count = 0
+        self.pulse_state = 0
+        
+        # Store all widgets for theme updates
+        self.all_widgets = []
         
         # Gamification
         self.update_streak()
@@ -42,11 +46,13 @@ class StudyTimerPro:
         self.setup_ui()
         self.setup_keyboard_shortcuts()
         self.update_display()
+        self.pulse_animation()
         
     def setup_ui(self):
-        # Main frame
-        self.main_frame = tk.Frame(self.root, bg=self.theme["bg"])
-        self.main_frame.pack(fill="both", expand=True)
+        # Main frame with border glow effect
+        self.main_frame = tk.Frame(self.root, bg=self.theme["bg"], 
+                                   highlightthickness=2, highlightbackground=self.theme["glow"])
+        self.main_frame.pack(fill="both", expand=True, padx=2, pady=2)
         
         # Title bar
         self.title_bar = tk.Frame(self.main_frame, bg=self.theme["bg"], cursor="fleur")
@@ -54,42 +60,56 @@ class StudyTimerPro:
         self.title_bar.bind("<Button-1>", self.start_drag)
         self.title_bar.bind("<B1-Motion>", self.on_drag)
         
-        # Clock display
-        self.clock_label = tk.Label(self.title_bar, text="", 
-                                    font=("Segoe UI", 10),
-                                    bg=self.theme["bg"], fg=self.theme["fg"])
-        self.clock_label.pack(side="top", pady=2)
+        # Top row: Clock and controls
+        top_row = tk.Frame(self.title_bar, bg=self.theme["bg"])
+        top_row.pack(fill="x", padx=10, pady=5)
+        
+        # Clock display with icon
+        self.clock_label = tk.Label(top_row, text="", 
+                                    font=("Consolas", 9),
+                                    bg=self.theme["bg"], fg=self.theme["accent"])
+        self.clock_label.pack(side="left")
         self.clock_label.bind("<Button-1>", self.start_drag)
         self.clock_label.bind("<B1-Motion>", self.on_drag)
         
-        # Timer display
-        self.timer_label = tk.Label(self.title_bar, text="00:00:00",
-                                    font=("Segoe UI", self.config.get("font_size")),
-                                    bg=self.theme["bg"], fg=self.theme["fg"])
-        self.timer_label.pack(side="left", padx=10, pady=5)
+        # Control buttons
+        btn_frame = tk.Frame(top_row, bg=self.theme["bg"])
+        btn_frame.pack(side="right")
+        
+        self.settings_btn = tk.Label(btn_frame, text="⚙", font=("Segoe UI", 11),
+                                     bg=self.theme["bg"], fg=self.theme["glow"], cursor="hand2")
+        self.settings_btn.pack(side="left", padx=4)
+        self.settings_btn.bind("<Button-1>", self.toggle_controls)
+        self.settings_btn.bind("<Enter>", lambda e: self.settings_btn.config(fg=self.theme["accent"]))
+        self.settings_btn.bind("<Leave>", lambda e: self.settings_btn.config(fg=self.theme["glow"]))
+        
+        self.close_btn = tk.Label(btn_frame, text="✕", font=("Segoe UI", 11),
+                                  bg=self.theme["bg"], fg=self.theme["glow"], cursor="hand2")
+        self.close_btn.pack(side="left", padx=4)
+        self.close_btn.bind("<Button-1>", self.on_close)
+        self.close_btn.bind("<Enter>", lambda e: self.close_btn.config(fg=self.theme["danger"]))
+        self.close_btn.bind("<Leave>", lambda e: self.close_btn.config(fg=self.theme["glow"]))
+        
+        # Timer display (large, centered)
+        timer_container = tk.Frame(self.title_bar, bg=self.theme["bg"])
+        timer_container.pack(fill="x", padx=10, pady=5)
+        
+        self.timer_label = tk.Label(timer_container, text="00:00:00",
+                                    font=("Consolas", 32, "bold"),
+                                    bg=self.theme["bg"], fg=self.theme["glow"])
+        self.timer_label.pack()
         self.timer_label.bind("<Button-1>", self.start_drag)
         self.timer_label.bind("<B1-Motion>", self.on_drag)
         
-        # Stats label (today's total)
+        # Stats bar at bottom
+        stats_bar = tk.Frame(self.title_bar, bg=self.theme["secondary"], height=2)
+        stats_bar.pack(fill="x", padx=10, pady=2)
+        
         self.stats_label = tk.Label(self.title_bar, text="",
-                                    font=("Segoe UI", 8),
+                                    font=("Consolas", 8),
                                     bg=self.theme["bg"], fg=self.theme["accent"])
-        self.stats_label.pack(side="left", padx=5)
+        self.stats_label.pack(pady=2)
         self.update_stats_display()
-        
-        # Control buttons
-        btn_frame = tk.Frame(self.title_bar, bg=self.theme["bg"])
-        btn_frame.pack(side="right")
-        
-        self.settings_btn = tk.Label(btn_frame, text="⚙", font=("Segoe UI", 12),
-                                     bg=self.theme["bg"], fg=self.theme["fg"], cursor="hand2")
-        self.settings_btn.pack(side="left", padx=3)
-        self.settings_btn.bind("<Button-1>", self.toggle_controls)
-        
-        self.close_btn = tk.Label(btn_frame, text="✕", font=("Segoe UI", 12),
-                                  bg=self.theme["bg"], fg=self.theme["fg"], cursor="hand2")
-        self.close_btn.pack(side="left", padx=3)
-        self.close_btn.bind("<Button-1>", self.on_close)
         
         # Controls frame
         self.controls_frame = tk.Frame(self.main_frame, bg=self.theme["bg"])
@@ -97,35 +117,40 @@ class StudyTimerPro:
         
     def setup_controls(self):
         # Notebook for tabs
-        style = ttk.Style()
-        style.theme_use('default')
-        style.configure('TNotebook', background=self.theme["bg"], borderwidth=0)
-        style.configure('TNotebook.Tab', background=self.theme["secondary"],
-                       foreground=self.theme["fg"], padding=[10, 5])
-        style.map('TNotebook.Tab', background=[('selected', self.theme["accent"])])
+        self.style = ttk.Style()
+        self.style.theme_use('default')
+        self.update_notebook_style()
         
         self.notebook = ttk.Notebook(self.controls_frame)
         self.notebook.pack(fill="both", expand=True, padx=5, pady=5)
         
         # Timer Tab
         self.timer_tab = tk.Frame(self.notebook, bg=self.theme["bg"])
-        self.notebook.add(self.timer_tab, text="Timer")
+        self.notebook.add(self.timer_tab, text="⏱ Timer")
         self.setup_timer_tab()
         
         # Presets Tab
         self.presets_tab = tk.Frame(self.notebook, bg=self.theme["bg"])
-        self.notebook.add(self.presets_tab, text="Presets")
+        self.notebook.add(self.presets_tab, text="⚡ Presets")
         self.setup_presets_tab()
         
         # Stats Tab
         self.stats_tab = tk.Frame(self.notebook, bg=self.theme["bg"])
-        self.notebook.add(self.stats_tab, text="Stats")
+        self.notebook.add(self.stats_tab, text="📊 Stats")
         self.setup_stats_tab()
         
         # Settings Tab
         self.settings_tab = tk.Frame(self.notebook, bg=self.theme["bg"])
-        self.notebook.add(self.settings_tab, text="Settings")
+        self.notebook.add(self.settings_tab, text="⚙ Settings")
         self.setup_settings_tab()
+    
+    def update_notebook_style(self):
+        self.style.configure('TNotebook', background=self.theme["bg"], borderwidth=0)
+        self.style.configure('TNotebook.Tab', background=self.theme["secondary"],
+                       foreground=self.theme["fg"], padding=[10, 5], borderwidth=0)
+        self.style.map('TNotebook.Tab', 
+                      background=[('selected', self.theme["accent"])],
+                      foreground=[('selected', self.theme["bg"])])
 
     def setup_timer_tab(self):
         # Task entry
@@ -248,7 +273,7 @@ class StudyTimerPro:
         
         self.theme_var = tk.StringVar(value=self.config.get("theme"))
         theme_combo = ttk.Combobox(settings_frame, textvariable=self.theme_var,
-                                   values=["dark", "light", "blue", "green", "purple", "nord"],
+                                   values=["cyberpunk", "neon", "matrix", "synthwave", "dark", "arctic"],
                                    state="readonly", width=15)
         theme_combo.grid(row=0, column=1, pady=5)
         theme_combo.bind("<<ComboboxSelected>>", self.change_theme)
@@ -315,11 +340,11 @@ class StudyTimerPro:
     def toggle_controls(self, event=None):
         if self.minimized:
             self.controls_frame.pack(fill="both", expand=True)
-            self.root.geometry("280x400")
+            self.root.geometry("320x420")
             self.minimized = False
         else:
             self.controls_frame.pack_forget()
-            self.root.geometry("280x100")
+            self.root.geometry("320x110")
             self.minimized = True
     
     def toggle_timer(self):
@@ -521,7 +546,8 @@ class StudyTimerPro:
     def change_theme(self, event=None):
         theme_name = self.theme_var.get()
         self.config.set("theme", theme_name)
-        messagebox.showinfo("Theme Changed", "Please restart the app to apply the new theme.")
+        self.theme = get_theme(theme_name)
+        self.apply_theme_to_all_widgets()
     
     def change_timezone(self, event=None):
         tz = self.tz_var.get()
@@ -556,6 +582,90 @@ A professional study timer with:
 
 Created for focused studying."""
         messagebox.showinfo("About", about_text)
+    
+    def apply_theme_to_all_widgets(self):
+        """Apply theme to all widgets instantly without restart"""
+        # Root and main frames
+        self.root.configure(bg=self.theme["bg"])
+        self.main_frame.configure(bg=self.theme["bg"], highlightbackground=self.theme["glow"])
+        self.title_bar.configure(bg=self.theme["bg"])
+        self.controls_frame.configure(bg=self.theme["bg"])
+        
+        # Labels
+        self.clock_label.configure(bg=self.theme["bg"], fg=self.theme["accent"])
+        self.timer_label.configure(bg=self.theme["bg"], fg=self.theme["glow"])
+        self.stats_label.configure(bg=self.theme["bg"], fg=self.theme["accent"])
+        self.settings_btn.configure(bg=self.theme["bg"], fg=self.theme["glow"])
+        self.close_btn.configure(bg=self.theme["bg"], fg=self.theme["glow"])
+        
+        # Update notebook style
+        self.update_notebook_style()
+        
+        # Timer tab
+        self.timer_tab.configure(bg=self.theme["bg"])
+        for widget in self.timer_tab.winfo_children():
+            self.update_widget_theme(widget)
+        
+        # Presets tab
+        self.presets_tab.configure(bg=self.theme["bg"])
+        for widget in self.presets_tab.winfo_children():
+            self.update_widget_theme(widget)
+        
+        # Stats tab
+        self.stats_tab.configure(bg=self.theme["bg"])
+        for widget in self.stats_tab.winfo_children():
+            self.update_widget_theme(widget)
+        
+        # Settings tab
+        self.settings_tab.configure(bg=self.theme["bg"])
+        for widget in self.settings_tab.winfo_children():
+            self.update_widget_theme(widget)
+    
+    def update_widget_theme(self, widget):
+        """Recursively update widget colors"""
+        try:
+            widget_type = widget.winfo_class()
+            
+            if widget_type in ['Frame', 'Labelframe']:
+                widget.configure(bg=self.theme["bg"])
+            elif widget_type == 'Label':
+                widget.configure(bg=self.theme["bg"], fg=self.theme["fg"])
+            elif widget_type == 'Button':
+                # Keep button-specific colors but update if needed
+                current_bg = str(widget.cget('bg'))
+                if 'green' in current_bg or '#4caf50' in current_bg:
+                    widget.configure(bg=self.theme["success"])
+                elif 'red' in current_bg or 'orange' in current_bg:
+                    widget.configure(bg=self.theme["warning"])
+                elif 'blue' in current_bg or '#4a9eff' in current_bg:
+                    widget.configure(bg=self.theme["accent"])
+                else:
+                    widget.configure(bg=self.theme["secondary"], fg=self.theme["fg"])
+            elif widget_type == 'Entry':
+                widget.configure(bg=self.theme["secondary"], fg=self.theme["fg"], 
+                               insertbackground=self.theme["fg"])
+            elif widget_type == 'Checkbutton':
+                widget.configure(bg=self.theme["bg"], fg=self.theme["fg"],
+                               selectcolor=self.theme["secondary"])
+            
+            # Recursively update children
+            for child in widget.winfo_children():
+                self.update_widget_theme(child)
+        except:
+            pass
+    
+    def pulse_animation(self):
+        """Subtle pulse animation for the timer border"""
+        if self.running:
+            # Pulse effect when timer is running
+            colors = [self.theme["glow"], self.theme["accent"], self.theme["glow"]]
+            color = colors[self.pulse_state % 3]
+            self.main_frame.configure(highlightbackground=color)
+            self.pulse_state += 1
+            self.root.after(1000, self.pulse_animation)
+        else:
+            self.main_frame.configure(highlightbackground=self.theme["glow"])
+            self.root.after(500, self.pulse_animation)
     
     def on_close(self, event=None):
         self.config.save_config()

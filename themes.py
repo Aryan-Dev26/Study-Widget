@@ -1,57 +1,63 @@
 THEMES = {
+    "cyberpunk": {
+        "bg": "#0a0e27",
+        "fg": "#00ff9f",
+        "accent": "#ff006e",
+        "secondary": "#1a1f3a",
+        "success": "#00ff9f",
+        "warning": "#ffbe0b",
+        "danger": "#ff006e",
+        "glow": "#00ff9f"
+    },
+    "neon": {
+        "bg": "#0d0221",
+        "fg": "#7df9ff",
+        "accent": "#ff10f0",
+        "secondary": "#1a0b2e",
+        "success": "#39ff14",
+        "warning": "#ffaa00",
+        "danger": "#ff0080",
+        "glow": "#7df9ff"
+    },
+    "matrix": {
+        "bg": "#000000",
+        "fg": "#00ff00",
+        "accent": "#00ff00",
+        "secondary": "#0a0a0a",
+        "success": "#00ff00",
+        "warning": "#ffff00",
+        "danger": "#ff0000",
+        "glow": "#00ff00"
+    },
+    "synthwave": {
+        "bg": "#2b213a",
+        "fg": "#f9f2e7",
+        "accent": "#ff6c11",
+        "secondary": "#3d2e4f",
+        "success": "#72dec2",
+        "warning": "#ffd319",
+        "danger": "#fe4450",
+        "glow": "#ff6c11"
+    },
     "dark": {
-        "bg": "#1e1e1e",
+        "bg": "#0f0f0f",
         "fg": "#e0e0e0",
         "accent": "#4a9eff",
-        "secondary": "#2d2d2d",
+        "secondary": "#1a1a1a",
         "success": "#4caf50",
         "warning": "#ffa500",
-        "danger": "#ff6b6b"
+        "danger": "#ff6b6b",
+        "glow": "#4a9eff"
     },
-    "light": {
-        "bg": "#f5f5f5",
-        "fg": "#333333",
-        "accent": "#2196f3",
-        "secondary": "#e0e0e0",
-        "success": "#4caf50",
-        "warning": "#ff9800",
-        "danger": "#f44336"
-    },
-    "blue": {
-        "bg": "#0d1b2a",
-        "fg": "#e0e1dd",
-        "accent": "#00b4d8",
-        "secondary": "#1b263b",
-        "success": "#06ffa5",
-        "warning": "#ffba08",
-        "danger": "#d00000"
-    },
-    "green": {
-        "bg": "#1a2f1a",
-        "fg": "#e8f5e9",
-        "accent": "#66bb6a",
-        "secondary": "#2e4a2e",
-        "success": "#81c784",
-        "warning": "#ffb74d",
-        "danger": "#e57373"
-    },
-    "purple": {
-        "bg": "#1a0033",
-        "fg": "#e1d5e7",
-        "accent": "#9c27b0",
-        "secondary": "#2d1b3d",
-        "success": "#ba68c8",
-        "warning": "#ffb74d",
-        "danger": "#ef5350"
-    },
-    "nord": {
-        "bg": "#2e3440",
-        "fg": "#eceff4",
-        "accent": "#88c0d0",
-        "secondary": "#3b4252",
-        "success": "#a3be8c",
-        "warning": "#ebcb8b",
-        "danger": "#bf616a"
+    "arctic": {
+        "bg": "#0c1821",
+        "fg": "#c0e0ff",
+        "accent": "#00d9ff",
+        "secondary": "#1b2a3a",
+        "success": "#00ffc8",
+        "warning": "#ffd700",
+        "danger": "#ff4757",
+        "glow": "#00d9ff"
     }
 }
 
