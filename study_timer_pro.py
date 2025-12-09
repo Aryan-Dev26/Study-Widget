@@ -395,11 +395,14 @@ class StudyTimerPro:
     
     def start_timer(self):
         try:
-            hours = float(self.hours_entry.get())
-            self.study_seconds = int(hours * 3600)
+            # If resuming (study_seconds > 0), keep the remaining time
+            if self.study_seconds == 0:
+                hours = float(self.hours_entry.get())
+                self.study_seconds = int(hours * 3600)
+            
             self.running = True
             self.start_time = time.time()
-            self.start_btn.config(state="disabled")
+            self.start_btn.config(state="disabled", text="▶ Start")
             self.stop_btn.config(state="normal")
             self.hours_entry.config(state="disabled")
             
@@ -415,22 +418,31 @@ class StudyTimerPro:
     
     def stop_timer(self):
         if self.running:
-            # Save session
+            # Calculate remaining time
             elapsed = int(time.time() - self.start_time)
-            if elapsed > 60:  # Only save if more than 1 minute
+            self.study_seconds = max(0, self.study_seconds - elapsed)
+            
+            # Only save session if timer completed or significant time passed
+            if self.study_seconds == 0 and elapsed > 60:
                 self.stats.add_session(elapsed, self.task_entry.get())
                 self.add_xp(elapsed)
                 self.update_stats_display()
         
         self.running = False
-        self.start_btn.config(state="normal")
+        self.start_btn.config(state="normal", text="▶ Resume" if self.study_seconds > 0 else "▶ Start")
         self.stop_btn.config(state="disabled")
-        self.hours_entry.config(state="normal")
+        
+        # Only enable hours entry if timer is reset
+        if self.study_seconds == 0:
+            self.hours_entry.config(state="normal")
     
     def reset_timer(self):
-        self.stop_timer()
+        self.running = False
         self.study_seconds = 0
-        self.timer_label.config(fg=self.theme["fg"])
+        self.timer_label.config(fg=self.theme["timer"], text="00:00:00")
+        self.start_btn.config(state="normal", text="▶ Start")
+        self.stop_btn.config(state="disabled")
+        self.hours_entry.config(state="normal")
         self.pomodoro_mode = False
         self.is_break = False
     
@@ -503,12 +515,21 @@ class StudyTimerPro:
                 self.timer_label.config(fg=self.theme["warning"])
             else:
                 self.timer_label.config(fg=self.theme["timer"])
+        else:
+            # When paused, show the remaining time
+            if self.study_seconds > 0:
+                hours = self.study_seconds // 3600
+                minutes = (self.study_seconds % 3600) // 60
+                seconds = self.study_seconds % 60
+                time_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+                self.timer_label.config(text=time_str)
         
         self.root.after(1000, self.update_display)
     
     def on_timer_complete(self):
         self.running = False
-        self.start_btn.config(state="normal")
+        self.study_seconds = 0
+        self.start_btn.config(state="normal", text="▶ Start")
         self.stop_btn.config(state="disabled")
         self.hours_entry.config(state="normal")
         
