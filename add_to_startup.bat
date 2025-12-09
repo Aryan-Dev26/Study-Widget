@@ -19,8 +19,8 @@ REM Check if executable exists
 if exist "%CURRENT_DIR%dist\StudyTimerPro.exe" (
     set "TARGET=%CURRENT_DIR%dist\StudyTimerPro.exe"
     
-    REM Create shortcut
-    powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%SHORTCUT%'); $Shortcut.TargetPath = '%TARGET%'; $Shortcut.WorkingDirectory = '%CURRENT_DIR%'; $Shortcut.Save()"
+    REM Create shortcut using VBScript
+    cscript //nologo "%CURRENT_DIR%create_shortcut.vbs" "%SHORTCUT%" "%TARGET%" "%CURRENT_DIR%" ""
     
 ) else if exist "%CURRENT_DIR%study_timer_pro.py" (
     REM Find Python executable
@@ -40,8 +40,8 @@ if exist "%CURRENT_DIR%dist\StudyTimerPro.exe" (
     
     set "ARGS=%CURRENT_DIR%study_timer_pro.py"
     
-    REM Create shortcut
-    powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%SHORTCUT%'); $Shortcut.TargetPath = '%PYTHON_EXE%'; $Shortcut.Arguments = '%ARGS%'; $Shortcut.WorkingDirectory = '%CURRENT_DIR%'; $Shortcut.Save()"
+    REM Create shortcut using VBScript
+    cscript //nologo "%CURRENT_DIR%create_shortcut.vbs" "%SHORTCUT%" "%PYTHON_EXE%" "%CURRENT_DIR%" "" "%ARGS%"
 ) else (
     echo Error: Could not find StudyTimerPro.exe or study_timer_pro.py
     pause
