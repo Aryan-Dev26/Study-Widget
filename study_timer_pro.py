@@ -8,6 +8,7 @@ from config import Config
 from statistics import Statistics
 from themes import get_theme
 from timezones import get_time_for_timezone, get_timezone_list
+from gradient_frame import GradientFrame
 
 class StudyTimerPro:
     def __init__(self, root):
@@ -49,65 +50,68 @@ class StudyTimerPro:
         self.pulse_animation()
         
     def setup_ui(self):
-        # Main frame with border glow effect
-        self.main_frame = tk.Frame(self.root, bg=self.theme["bg"], 
-                                   highlightthickness=2, highlightbackground=self.theme["glow"])
+        # Main frame with gradient background and border glow effect
+        self.main_frame = GradientFrame(self.root, 
+                                       self.theme["gradient_start"], 
+                                       self.theme["gradient_end"],
+                                       highlightthickness=3, 
+                                       highlightbackground=self.theme["border"])
         self.main_frame.pack(fill="both", expand=True, padx=2, pady=2)
         
-        # Title bar
-        self.title_bar = tk.Frame(self.main_frame, bg=self.theme["bg"], cursor="fleur")
+        # Title bar with transparent background
+        self.title_bar = tk.Frame(self.main_frame, bg=self.theme["card_bg"], cursor="fleur")
         self.title_bar.pack(fill="x")
         self.title_bar.bind("<Button-1>", self.start_drag)
         self.title_bar.bind("<B1-Motion>", self.on_drag)
         
         # Top row: Clock and controls
-        top_row = tk.Frame(self.title_bar, bg=self.theme["bg"])
+        top_row = tk.Frame(self.title_bar, bg=self.theme["card_bg"])
         top_row.pack(fill="x", padx=10, pady=5)
         
         # Clock display with icon
         self.clock_label = tk.Label(top_row, text="", 
                                     font=("Consolas", 9),
-                                    bg=self.theme["bg"], fg=self.theme["accent"])
+                                    bg=self.theme["card_bg"], fg=self.theme["accent"])
         self.clock_label.pack(side="left")
         self.clock_label.bind("<Button-1>", self.start_drag)
         self.clock_label.bind("<B1-Motion>", self.on_drag)
         
         # Control buttons
-        btn_frame = tk.Frame(top_row, bg=self.theme["bg"])
+        btn_frame = tk.Frame(top_row, bg=self.theme["card_bg"])
         btn_frame.pack(side="right")
         
         self.settings_btn = tk.Label(btn_frame, text="⚙", font=("Segoe UI", 11),
-                                     bg=self.theme["bg"], fg=self.theme["glow"], cursor="hand2")
+                                     bg=self.theme["card_bg"], fg=self.theme["glow"], cursor="hand2")
         self.settings_btn.pack(side="left", padx=4)
         self.settings_btn.bind("<Button-1>", self.toggle_controls)
         self.settings_btn.bind("<Enter>", lambda e: self.settings_btn.config(fg=self.theme["accent"]))
         self.settings_btn.bind("<Leave>", lambda e: self.settings_btn.config(fg=self.theme["glow"]))
         
         self.close_btn = tk.Label(btn_frame, text="✕", font=("Segoe UI", 11),
-                                  bg=self.theme["bg"], fg=self.theme["glow"], cursor="hand2")
+                                  bg=self.theme["card_bg"], fg=self.theme["glow"], cursor="hand2")
         self.close_btn.pack(side="left", padx=4)
         self.close_btn.bind("<Button-1>", self.on_close)
         self.close_btn.bind("<Enter>", lambda e: self.close_btn.config(fg=self.theme["danger"]))
         self.close_btn.bind("<Leave>", lambda e: self.close_btn.config(fg=self.theme["glow"]))
         
         # Timer display (large, centered)
-        timer_container = tk.Frame(self.title_bar, bg=self.theme["bg"])
+        timer_container = tk.Frame(self.title_bar, bg=self.theme["card_bg"])
         timer_container.pack(fill="x", padx=10, pady=8)
         
         self.timer_label = tk.Label(timer_container, text="00:00:00",
                                     font=("Consolas", 36, "bold"),
-                                    bg=self.theme["bg"], fg=self.theme["timer"])
+                                    bg=self.theme["card_bg"], fg=self.theme["timer"])
         self.timer_label.pack()
         self.timer_label.bind("<Button-1>", self.start_drag)
         self.timer_label.bind("<B1-Motion>", self.on_drag)
         
         # Time breakdown (hours, minutes, seconds)
-        breakdown_frame = tk.Frame(self.title_bar, bg=self.theme["bg"])
+        breakdown_frame = tk.Frame(self.title_bar, bg=self.theme["card_bg"])
         breakdown_frame.pack(pady=3)
         
         self.breakdown_label = tk.Label(breakdown_frame, text="0h 0m 0s",
                                         font=("Segoe UI", 9),
-                                        bg=self.theme["bg"], fg=self.theme["accent"])
+                                        bg=self.theme["card_bg"], fg=self.theme["accent"])
         self.breakdown_label.pack()
         
         # Stats bar at bottom
@@ -116,12 +120,12 @@ class StudyTimerPro:
         
         self.stats_label = tk.Label(self.title_bar, text="",
                                     font=("Consolas", 8),
-                                    bg=self.theme["bg"], fg=self.theme["accent"])
+                                    bg=self.theme["card_bg"], fg=self.theme["accent"])
         self.stats_label.pack(pady=2)
         self.update_stats_display()
         
         # Controls frame
-        self.controls_frame = tk.Frame(self.main_frame, bg=self.theme["bg"])
+        self.controls_frame = tk.Frame(self.main_frame, bg=self.theme["card_bg"])
         self.setup_controls()
         
     def setup_controls(self):
@@ -154,12 +158,12 @@ class StudyTimerPro:
         self.setup_settings_tab()
     
     def update_notebook_style(self):
-        self.style.configure('TNotebook', background=self.theme["bg"], borderwidth=0)
+        self.style.configure('TNotebook', background=self.theme["card_bg"], borderwidth=0)
         self.style.configure('TNotebook.Tab', background=self.theme["secondary"],
                        foreground=self.theme["fg"], padding=[10, 5], borderwidth=0)
         self.style.map('TNotebook.Tab', 
                       background=[('selected', self.theme["accent"])],
-                      foreground=[('selected', self.theme["bg"])])
+                      foreground=[('selected', 'white')])
 
     def setup_timer_tab(self):
         # Task entry
@@ -608,40 +612,44 @@ Created for focused studying."""
     
     def apply_theme_to_all_widgets(self):
         """Apply theme to all widgets instantly without restart"""
-        # Root and main frames
+        # Root and main frames with gradient
         self.root.configure(bg=self.theme["bg"])
-        self.main_frame.configure(bg=self.theme["bg"], highlightbackground=self.theme["glow"])
-        self.title_bar.configure(bg=self.theme["bg"])
-        self.controls_frame.configure(bg=self.theme["bg"])
+        self.main_frame.color1 = self.theme["gradient_start"]
+        self.main_frame.color2 = self.theme["gradient_end"]
+        self.main_frame.configure(highlightbackground=self.theme["border"])
+        self.main_frame._draw_gradient()
+        
+        self.title_bar.configure(bg=self.theme["card_bg"])
+        self.controls_frame.configure(bg=self.theme["card_bg"])
         
         # Labels
-        self.clock_label.configure(bg=self.theme["bg"], fg=self.theme["accent"])
-        self.timer_label.configure(bg=self.theme["bg"], fg=self.theme["timer"])
-        self.breakdown_label.configure(bg=self.theme["bg"], fg=self.theme["accent"])
-        self.stats_label.configure(bg=self.theme["bg"], fg=self.theme["accent"])
-        self.settings_btn.configure(bg=self.theme["bg"], fg=self.theme["glow"])
-        self.close_btn.configure(bg=self.theme["bg"], fg=self.theme["glow"])
+        self.clock_label.configure(bg=self.theme["card_bg"], fg=self.theme["accent"])
+        self.timer_label.configure(bg=self.theme["card_bg"], fg=self.theme["timer"])
+        self.breakdown_label.configure(bg=self.theme["card_bg"], fg=self.theme["accent"])
+        self.stats_label.configure(bg=self.theme["card_bg"], fg=self.theme["accent"])
+        self.settings_btn.configure(bg=self.theme["card_bg"], fg=self.theme["glow"])
+        self.close_btn.configure(bg=self.theme["card_bg"], fg=self.theme["glow"])
         
         # Update notebook style
         self.update_notebook_style()
         
         # Timer tab
-        self.timer_tab.configure(bg=self.theme["bg"])
+        self.timer_tab.configure(bg=self.theme["card_bg"])
         for widget in self.timer_tab.winfo_children():
             self.update_widget_theme(widget)
         
         # Presets tab
-        self.presets_tab.configure(bg=self.theme["bg"])
+        self.presets_tab.configure(bg=self.theme["card_bg"])
         for widget in self.presets_tab.winfo_children():
             self.update_widget_theme(widget)
         
         # Stats tab
-        self.stats_tab.configure(bg=self.theme["bg"])
+        self.stats_tab.configure(bg=self.theme["card_bg"])
         for widget in self.stats_tab.winfo_children():
             self.update_widget_theme(widget)
         
         # Settings tab
-        self.settings_tab.configure(bg=self.theme["bg"])
+        self.settings_tab.configure(bg=self.theme["card_bg"])
         for widget in self.settings_tab.winfo_children():
             self.update_widget_theme(widget)
     
@@ -651,9 +659,9 @@ Created for focused studying."""
             widget_type = widget.winfo_class()
             
             if widget_type in ['Frame', 'Labelframe']:
-                widget.configure(bg=self.theme["bg"])
+                widget.configure(bg=self.theme["card_bg"])
             elif widget_type == 'Label':
-                widget.configure(bg=self.theme["bg"], fg=self.theme["fg"])
+                widget.configure(bg=self.theme["card_bg"], fg=self.theme["fg"])
             elif widget_type == 'Button':
                 # Keep button-specific colors but update if needed
                 current_bg = str(widget.cget('bg'))
@@ -682,13 +690,13 @@ Created for focused studying."""
         """Subtle pulse animation for the timer border"""
         if self.running:
             # Pulse effect when timer is running
-            colors = [self.theme["glow"], self.theme["accent"], self.theme["glow"]]
+            colors = [self.theme["border"], self.theme["accent"], self.theme["border"]]
             color = colors[self.pulse_state % 3]
             self.main_frame.configure(highlightbackground=color)
             self.pulse_state += 1
             self.root.after(1000, self.pulse_animation)
         else:
-            self.main_frame.configure(highlightbackground=self.theme["glow"])
+            self.main_frame.configure(highlightbackground=self.theme["border"])
             self.root.after(500, self.pulse_animation)
     
     def on_close(self, event=None):
