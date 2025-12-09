@@ -40,7 +40,7 @@ A professional study timer widget for Windows with advanced features for focused
 
 ## 🚀 Quick Start
 
-### Installation
+### Option 1: Run from Source
 
 1. **Clone the repository:**
 ```bash
@@ -58,6 +58,37 @@ pip install -r requirements.txt
 python study_timer_pro.py
 ```
 
+### Option 2: Build Executable
+
+1. **Build the .exe file:**
+```bash
+build_exe.bat
+```
+
+2. **The executable will be in the `dist` folder**
+
+### Option 3: Quick Setup Scripts
+
+**Create Desktop Shortcut:**
+```bash
+create_desktop_shortcut.bat
+```
+- Creates a shortcut on your desktop
+- Pin to taskbar for quick access
+- Set custom keyboard shortcut (e.g., Ctrl+Alt+S)
+
+**Add to Windows Startup:**
+```bash
+add_to_startup.bat
+```
+- Automatically starts with Windows
+- Runs minimized in system tray
+
+**Remove from Startup:**
+```bash
+remove_from_startup.bat
+```
+
 ### First Time Setup
 
 1. Click the ⚙️ settings icon
@@ -65,6 +96,15 @@ python study_timer_pro.py
 3. Select your timezone
 4. Adjust opacity to your liking
 5. Start studying!
+
+## 🎯 System Tray Features
+
+- **Minimize to Tray** - Click X to hide to system tray
+- **Right-click Tray Icon** for quick actions:
+  - Show/Hide window
+  - Start/Stop timer
+  - Quit application
+- **Double-click Tray Icon** to show window
 
 ## 📖 How to Use
 
@@ -83,9 +123,19 @@ python study_timer_pro.py
 5. Every 4th break is 15 minutes
 
 ### Keyboard Shortcuts
+
+**Built-in Shortcuts:**
 - `Space` - Start/Pause timer
 - `R` - Reset timer
 - `Esc` - Show/Hide controls
+
+**Custom Global Shortcut (Windows):**
+1. Create desktop shortcut using `create_desktop_shortcut.bat`
+2. Right-click the shortcut → Properties
+3. Click in "Shortcut key" field
+4. Press your desired combo (e.g., `Ctrl+Alt+S`)
+5. Click OK
+6. Now press your combo anywhere to launch the app!
 
 ### View Statistics
 1. Click ⚙️ settings icon

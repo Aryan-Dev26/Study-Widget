@@ -9,6 +9,7 @@ from statistics import Statistics
 from themes import get_theme
 from timezones import get_time_for_timezone, get_timezone_list
 from gradient_frame import GradientFrame
+from system_tray import SystemTray
 
 class StudyTimerPro:
     def __init__(self, root):
@@ -41,6 +42,12 @@ class StudyTimerPro:
         # Store all widgets for theme updates
         self.all_widgets = []
         
+        # System tray
+        self.tray = None
+        if self.config.get("system_tray"):
+            self.tray = SystemTray(self)
+            self.tray.run()
+        
         # Gamification
         self.update_streak()
         
@@ -48,6 +55,9 @@ class StudyTimerPro:
         self.setup_keyboard_shortcuts()
         self.update_display()
         self.pulse_animation()
+        
+        # Handle window close button (minimize to tray instead)
+        self.root.protocol("WM_DELETE_WINDOW", self.minimize_to_tray)
         
     def setup_ui(self):
         # Main frame with gradient background and border glow effect
@@ -90,7 +100,7 @@ class StudyTimerPro:
         self.close_btn = tk.Label(btn_frame, text="✕", font=("Segoe UI", 8),
                                   bg=self.theme["card_bg"], fg=self.theme["glow"], cursor="hand2")
         self.close_btn.pack(side="left", padx=2)
-        self.close_btn.bind("<Button-1>", self.on_close)
+        self.close_btn.bind("<Button-1>", lambda e: self.minimize_to_tray())
         self.close_btn.bind("<Enter>", lambda e: self.close_btn.config(fg=self.theme["danger"]))
         self.close_btn.bind("<Leave>", lambda e: self.close_btn.config(fg=self.theme["glow"]))
         
@@ -713,10 +723,21 @@ Created for focused studying."""
             self.main_frame.configure(highlightbackground=self.theme["border"])
             self.root.after(500, self.pulse_animation)
     
+    def minimize_to_tray(self):
+        """Minimize to system tray instead of closing"""
+        if self.tray:
+            self.tray.hide_window()
+        else:
+            self.on_close()
+    
     def on_close(self, event=None):
+        """Actually close the application"""
         self.config.save_config()
         self.stats.save_stats()
+        if self.tray:
+            self.tray.quit_app()
         self.root.quit()
+        self.root.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()

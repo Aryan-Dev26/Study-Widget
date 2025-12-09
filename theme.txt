@@ -1,0 +1,319 @@
+import React, { useState, useEffect } from 'react';
+import { Play, Pause, RotateCcw, Clock, BookOpen, BarChart3, Settings, Moon, Sun, Coffee, Leaf, Zap, Palette } from 'lucide-react';
+
+const themes = {
+  midnight: {
+    name: 'Midnight Focus',
+    icon: Moon,
+    bg: 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
+    card: 'bg-slate-800/50 backdrop-blur-sm border-purple-500/30',
+    text: 'text-blue-100',
+    accent: 'text-purple-400',
+    button: 'bg-purple-600 hover:bg-purple-700',
+    buttonSecondary: 'bg-slate-700 hover:bg-slate-600',
+    timer: 'text-blue-300',
+    glow: 'shadow-lg shadow-purple-500/20'
+  },
+  sunrise: {
+    name: 'Sunrise Energy',
+    icon: Sun,
+    bg: 'bg-gradient-to-br from-orange-100 via-pink-50 to-yellow-100',
+    card: 'bg-white/70 backdrop-blur-sm border-orange-300/50',
+    text: 'text-gray-800',
+    accent: 'text-orange-600',
+    button: 'bg-orange-500 hover:bg-orange-600',
+    buttonSecondary: 'bg-orange-100 hover:bg-orange-200',
+    timer: 'text-orange-700',
+    glow: 'shadow-lg shadow-orange-200/50'
+  },
+  forest: {
+    name: 'Forest Calm',
+    icon: Leaf,
+    bg: 'bg-gradient-to-br from-emerald-900 via-teal-800 to-green-900',
+    card: 'bg-emerald-800/40 backdrop-blur-sm border-green-400/30',
+    text: 'text-emerald-50',
+    accent: 'text-green-400',
+    button: 'bg-green-600 hover:bg-green-700',
+    buttonSecondary: 'bg-emerald-700 hover:bg-emerald-600',
+    timer: 'text-green-300',
+    glow: 'shadow-lg shadow-green-500/20'
+  },
+  coffee: {
+    name: 'Coffee Break',
+    icon: Coffee,
+    bg: 'bg-gradient-to-br from-amber-50 via-orange-50 to-brown-50',
+    card: 'bg-amber-100/60 backdrop-blur-sm border-amber-400/40',
+    text: 'text-amber-900',
+    accent: 'text-amber-700',
+    button: 'bg-amber-600 hover:bg-amber-700',
+    buttonSecondary: 'bg-amber-200 hover:bg-amber-300',
+    timer: 'text-amber-800',
+    glow: 'shadow-lg shadow-amber-300/40'
+  },
+  ocean: {
+    name: 'Ocean Depth',
+    icon: Zap,
+    bg: 'bg-gradient-to-br from-cyan-900 via-blue-900 to-indigo-900',
+    card: 'bg-blue-900/40 backdrop-blur-sm border-cyan-400/30',
+    text: 'text-cyan-50',
+    accent: 'text-cyan-400',
+    button: 'bg-cyan-600 hover:bg-cyan-700',
+    buttonSecondary: 'bg-blue-800 hover:bg-blue-700',
+    timer: 'text-cyan-300',
+    glow: 'shadow-lg shadow-cyan-500/20'
+  },
+  minimal: {
+    name: 'Minimal Dark',
+    icon: BookOpen,
+    bg: 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900',
+    card: 'bg-gray-800/50 backdrop-blur-sm border-gray-600/30',
+    text: 'text-gray-100',
+    accent: 'text-gray-400',
+    button: 'bg-gray-700 hover:bg-gray-600',
+    buttonSecondary: 'bg-gray-800 hover:bg-gray-700',
+    timer: 'text-gray-300',
+    glow: 'shadow-lg shadow-gray-700/20'
+  }
+};
+
+export default function StudyTimer() {
+  const [currentTheme, setCurrentTheme] = useState('midnight');
+  const [time, setTime] = useState(3600);
+  const [isRunning, setIsRunning] = useState(false);
+  const [task, setTask] = useState('');
+  const [hours, setHours] = useState(1);
+  const [activeTab, setActiveTab] = useState('timer');
+  const [showThemes, setShowThemes] = useState(false);
+
+  const theme = themes[currentTheme];
+
+  useEffect(() => {
+    let interval;
+    if (isRunning && time > 0) {
+      interval = setInterval(() => {
+        setTime(t => t - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning, time]);
+
+  const formatTime = (seconds) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  const handleStart = () => setIsRunning(true);
+  const handlePause = () => setIsRunning(false);
+  const handleReset = () => {
+    setIsRunning(false);
+    setTime(hours * 3600);
+  };
+
+  const handleHoursChange = (newHours) => {
+    setHours(newHours);
+    setTime(newHours * 3600);
+    setIsRunning(false);
+  };
+
+  const ThemeIcon = theme.icon;
+
+  return (
+    <div className={`min-h-screen ${theme.bg} flex items-center justify-center p-4 transition-all duration-500`}>
+      <div className={`w-full max-w-md ${theme.card} ${theme.glow} rounded-2xl border p-6 transition-all duration-300`}>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <Clock className={`w-5 h-5 ${theme.accent}`} />
+            <span className={`text-sm ${theme.text} font-medium`}>11:04:11 AM</span>
+          </div>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => setShowThemes(!showThemes)}
+              className={`p-2 ${theme.buttonSecondary} rounded-lg transition-colors`}
+            >
+              <Palette className={`w-4 h-4 ${theme.text}`} />
+            </button>
+            <button className={`p-2 ${theme.buttonSecondary} rounded-lg transition-colors`}>
+              <Settings className={`w-4 h-4 ${theme.text}`} />
+            </button>
+          </div>
+        </div>
+
+        {/* Theme Selector */}
+        {showThemes && (
+          <div className="mb-6 grid grid-cols-3 gap-2">
+            {Object.entries(themes).map(([key, t]) => {
+              const Icon = t.icon;
+              return (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setCurrentTheme(key);
+                    setShowThemes(false);
+                  }}
+                  className={`p-3 rounded-lg border-2 transition-all ${
+                    currentTheme === key 
+                      ? 'border-white/50 scale-95' 
+                      : 'border-transparent hover:border-white/20'
+                  } ${t.bg} flex flex-col items-center gap-1`}
+                >
+                  <Icon className="w-4 h-4 text-white" />
+                  <span className="text-xs text-white font-medium">{t.name.split(' ')[0]}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Timer Display */}
+        <div className="text-center mb-8">
+          <div className={`text-7xl font-bold ${theme.timer} tracking-wider mb-4 font-mono`}>
+            {formatTime(time)}
+          </div>
+          <div className="flex justify-center gap-2 mb-4">
+            <span className={`px-3 py-1 ${theme.buttonSecondary} rounded text-xs ${theme.text}`}>
+              {Math.floor(time / 3600)}h
+            </span>
+            <span className={`px-3 py-1 ${theme.buttonSecondary} rounded text-xs ${theme.text}`}>
+              {Math.floor((time % 3600) / 60)}m
+            </span>
+            <span className={`px-3 py-1 ${theme.buttonSecondary} rounded text-xs ${theme.text}`}>
+              {time % 60}s
+            </span>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6">
+          {[
+            { id: 'timer', label: 'Timer', icon: Clock },
+            { id: 'presets', label: 'Presets', icon: Zap },
+            { id: 'stats', label: 'Stats', icon: BarChart3 }
+          ].map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-colors ${
+                activeTab === id ? theme.button : theme.buttonSecondary
+              }`}
+            >
+              <Icon className={`w-4 h-4 ${theme.text}`} />
+              <span className={`text-sm ${theme.text} font-medium`}>{label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Task Input */}
+        {activeTab === 'timer' && (
+          <>
+            <div className="mb-4">
+              <label className={`block text-sm ${theme.text} mb-2`}>Task:</label>
+              <input
+                type="text"
+                value={task}
+                onChange={(e) => setTask(e.target.value)}
+                placeholder="What are you studying?"
+                className={`w-full px-4 py-3 ${theme.buttonSecondary} border border-transparent rounded-lg ${theme.text} placeholder-gray-500 focus:outline-none focus:border-white/30 transition-colors`}
+              />
+            </div>
+
+            {/* Hours Selection */}
+            <div className="mb-6">
+              <label className={`block text-sm ${theme.text} mb-2`}>Hours:</label>
+              <div className="flex gap-2">
+                {[0.5, 1, 1.5, 2, 3].map((h) => (
+                  <button
+                    key={h}
+                    onClick={() => handleHoursChange(h)}
+                    className={`flex-1 py-2 rounded-lg transition-all ${
+                      hours === h ? theme.button : theme.buttonSecondary
+                    }`}
+                  >
+                    <span className={`text-sm ${theme.text} font-medium`}>{h}h</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Control Buttons */}
+            <div className="flex gap-3">
+              {!isRunning ? (
+                <button
+                  onClick={handleStart}
+                  className={`flex-1 ${theme.button} text-white py-4 px-6 rounded-lg font-medium transition-all hover:scale-105 flex items-center justify-center gap-2`}
+                >
+                  <Play className="w-5 h-5" fill="white" />
+                  Start
+                </button>
+              ) : (
+                <button
+                  onClick={handlePause}
+                  className={`flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-4 px-6 rounded-lg font-medium transition-all hover:scale-105 flex items-center justify-center gap-2`}
+                >
+                  <Pause className="w-5 h-5" fill="white" />
+                  Pause
+                </button>
+              )}
+              <button
+                onClick={handleReset}
+                className={`${theme.buttonSecondary} py-4 px-6 rounded-lg font-medium transition-all hover:scale-105 flex items-center justify-center gap-2`}
+              >
+                <RotateCcw className={`w-5 h-5 ${theme.text}`} />
+                <span className={theme.text}>Reset</span>
+              </button>
+            </div>
+          </>
+        )}
+
+        {activeTab === 'presets' && (
+          <div className="space-y-3">
+            {[
+              { name: 'Pomodoro', time: 25, icon: '🍅' },
+              { name: 'Short Break', time: 5, icon: '☕' },
+              { name: 'Long Break', time: 15, icon: '🌟' },
+              { name: 'Deep Work', time: 90, icon: '🎯' },
+              { name: 'Quick Study', time: 45, icon: '📚' }
+            ].map((preset) => (
+              <button
+                key={preset.name}
+                onClick={() => {
+                  setTime(preset.time * 60);
+                  setHours(preset.time / 60);
+                  setIsRunning(false);
+                }}
+                className={`w-full ${theme.buttonSecondary} p-4 rounded-lg hover:scale-105 transition-all flex items-center justify-between`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{preset.icon}</span>
+                  <span className={`font-medium ${theme.text}`}>{preset.name}</span>
+                </div>
+                <span className={`${theme.accent} font-medium`}>{preset.time} min</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'stats' && (
+          <div className="space-y-4">
+            <div className={`${theme.buttonSecondary} p-4 rounded-lg`}>
+              <div className={`text-sm ${theme.accent} mb-1`}>Today's Focus Time</div>
+              <div className={`text-3xl font-bold ${theme.timer}`}>2h 34m</div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className={`${theme.buttonSecondary} p-4 rounded-lg`}>
+                <div className={`text-sm ${theme.accent} mb-1`}>Sessions</div>
+                <div className={`text-2xl font-bold ${theme.text}`}>5</div>
+              </div>
+              <div className={`${theme.buttonSecondary} p-4 rounded-lg`}>
+                <div className={`text-sm ${theme.accent} mb-1`}>Streak</div>
+                <div className={`text-2xl font-bold ${theme.text}`}>7 days</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
