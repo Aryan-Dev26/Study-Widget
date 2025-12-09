@@ -7,8 +7,8 @@ class Config:
         self.config_file = "study_timer_config.json"
         self.default_config = {
             "theme": "midnight",
-            "opacity": 0.95,
-            "font_size": 36,
+            "opacity": 0.90,
+            "font_size": 20,
             "position": {"x": 100, "y": 100},
             "timezone": "Local",
             "sound_enabled": True,

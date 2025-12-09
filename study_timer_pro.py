@@ -18,7 +18,7 @@ class StudyTimerPro:
         
         # Load saved position
         pos = self.config.get("position")
-        self.root.geometry(f"340x130+{pos['x']}+{pos['y']}")
+        self.root.geometry(f"200x70+{pos['x']}+{pos['y']}")
         self.root.title("")
         self.root.attributes('-topmost', True)
         self.root.overrideredirect(True)
@@ -54,75 +54,72 @@ class StudyTimerPro:
         self.main_frame = GradientFrame(self.root, 
                                        self.theme["gradient_start"], 
                                        self.theme["gradient_end"],
-                                       highlightthickness=3, 
+                                       highlightthickness=2, 
                                        highlightbackground=self.theme["border"])
-        self.main_frame.pack(fill="both", expand=True, padx=2, pady=2)
+        self.main_frame.pack(fill="both", expand=True, padx=1, pady=1)
         
         # Title bar with transparent background
         self.title_bar = tk.Frame(self.main_frame, bg=self.theme["card_bg"], cursor="fleur")
-        self.title_bar.pack(fill="x")
+        self.title_bar.pack(fill="both", expand=True)
         self.title_bar.bind("<Button-1>", self.start_drag)
         self.title_bar.bind("<B1-Motion>", self.on_drag)
         
-        # Top row: Clock and controls
+        # Top row: Clock and controls (compact)
         top_row = tk.Frame(self.title_bar, bg=self.theme["card_bg"])
-        top_row.pack(fill="x", padx=10, pady=5)
+        top_row.pack(fill="x", padx=5, pady=2)
         
-        # Clock display with icon
+        # Clock display with icon (smaller)
         self.clock_label = tk.Label(top_row, text="", 
-                                    font=("Consolas", 9),
+                                    font=("Consolas", 7),
                                     bg=self.theme["card_bg"], fg=self.theme["accent"])
         self.clock_label.pack(side="left")
         self.clock_label.bind("<Button-1>", self.start_drag)
         self.clock_label.bind("<B1-Motion>", self.on_drag)
         
-        # Control buttons
+        # Control buttons (smaller)
         btn_frame = tk.Frame(top_row, bg=self.theme["card_bg"])
         btn_frame.pack(side="right")
         
-        self.settings_btn = tk.Label(btn_frame, text="⚙", font=("Segoe UI", 11),
+        self.settings_btn = tk.Label(btn_frame, text="⚙", font=("Segoe UI", 8),
                                      bg=self.theme["card_bg"], fg=self.theme["glow"], cursor="hand2")
-        self.settings_btn.pack(side="left", padx=4)
+        self.settings_btn.pack(side="left", padx=2)
         self.settings_btn.bind("<Button-1>", self.toggle_controls)
         self.settings_btn.bind("<Enter>", lambda e: self.settings_btn.config(fg=self.theme["accent"]))
         self.settings_btn.bind("<Leave>", lambda e: self.settings_btn.config(fg=self.theme["glow"]))
         
-        self.close_btn = tk.Label(btn_frame, text="✕", font=("Segoe UI", 11),
+        self.close_btn = tk.Label(btn_frame, text="✕", font=("Segoe UI", 8),
                                   bg=self.theme["card_bg"], fg=self.theme["glow"], cursor="hand2")
-        self.close_btn.pack(side="left", padx=4)
+        self.close_btn.pack(side="left", padx=2)
         self.close_btn.bind("<Button-1>", self.on_close)
         self.close_btn.bind("<Enter>", lambda e: self.close_btn.config(fg=self.theme["danger"]))
         self.close_btn.bind("<Leave>", lambda e: self.close_btn.config(fg=self.theme["glow"]))
         
-        # Timer display (large, centered)
+        # Timer display (compact, centered)
         timer_container = tk.Frame(self.title_bar, bg=self.theme["card_bg"])
-        timer_container.pack(fill="x", padx=10, pady=8)
+        timer_container.pack(fill="both", expand=True, padx=5, pady=2)
         
         self.timer_label = tk.Label(timer_container, text="00:00:00",
-                                    font=("Consolas", 36, "bold"),
+                                    font=("Consolas", 20, "bold"),
                                     bg=self.theme["card_bg"], fg=self.theme["timer"])
-        self.timer_label.pack()
+        self.timer_label.pack(expand=True)
         self.timer_label.bind("<Button-1>", self.start_drag)
         self.timer_label.bind("<B1-Motion>", self.on_drag)
         
-        # Time breakdown (hours, minutes, seconds)
-        breakdown_frame = tk.Frame(self.title_bar, bg=self.theme["card_bg"])
-        breakdown_frame.pack(pady=3)
-        
-        self.breakdown_label = tk.Label(breakdown_frame, text="0h 0m 0s",
-                                        font=("Segoe UI", 9),
+        # Time breakdown (hidden by default, shown on hover)
+        self.breakdown_label = tk.Label(self.title_bar, text="",
+                                        font=("Consolas", 6),
                                         bg=self.theme["card_bg"], fg=self.theme["accent"])
-        self.breakdown_label.pack()
         
-        # Stats bar at bottom
-        stats_bar = tk.Frame(self.title_bar, bg=self.theme["secondary"], height=2)
-        stats_bar.pack(fill="x", padx=10, pady=2)
-        
+        # Stats label (compact)
         self.stats_label = tk.Label(self.title_bar, text="",
-                                    font=("Consolas", 8),
+                                    font=("Consolas", 6),
                                     bg=self.theme["card_bg"], fg=self.theme["accent"])
-        self.stats_label.pack(pady=2)
+        self.stats_label.pack(side="bottom", pady=1)
         self.update_stats_display()
+        
+        # Hover to show breakdown
+        self.timer_label.bind("<Enter>", self.show_breakdown)
+        self.timer_label.bind("<Leave>", self.hide_breakdown)
         
         # Controls frame
         self.controls_frame = tk.Frame(self.main_frame, bg=self.theme["card_bg"])
@@ -361,14 +358,23 @@ class StudyTimerPro:
         self.root.geometry(f"+{x}+{y}")
         self.config.set("position", {"x": x, "y": y})
     
+    def show_breakdown(self, event=None):
+        """Show time breakdown on hover"""
+        if self.running:
+            self.breakdown_label.pack(side="bottom", pady=1)
+    
+    def hide_breakdown(self, event=None):
+        """Hide time breakdown"""
+        self.breakdown_label.pack_forget()
+    
     def toggle_controls(self, event=None):
         if self.minimized:
             self.controls_frame.pack(fill="both", expand=True)
-            self.root.geometry("340x450")
+            self.root.geometry("300x400")
             self.minimized = False
         else:
             self.controls_frame.pack_forget()
-            self.root.geometry("340x130")
+            self.root.geometry("200x70")
             self.minimized = True
     
     def toggle_timer(self):
@@ -533,7 +539,12 @@ class StudyTimerPro:
         today_total = self.stats.get_today_total()
         hours = today_total // 3600
         minutes = (today_total % 3600) // 60
-        self.stats_label.config(text=f"📊 {hours}h {minutes}m")
+        if hours > 0:
+            self.stats_label.config(text=f"{hours}h {minutes}m")
+        elif minutes > 0:
+            self.stats_label.config(text=f"{minutes}m")
+        else:
+            self.stats_label.config(text="0m")
     
     def format_time(self, seconds):
         hours = seconds // 3600
@@ -623,12 +634,15 @@ Created for focused studying."""
         self.controls_frame.configure(bg=self.theme["card_bg"])
         
         # Labels
-        self.clock_label.configure(bg=self.theme["card_bg"], fg=self.theme["accent"])
-        self.timer_label.configure(bg=self.theme["card_bg"], fg=self.theme["timer"])
-        self.breakdown_label.configure(bg=self.theme["card_bg"], fg=self.theme["accent"])
-        self.stats_label.configure(bg=self.theme["card_bg"], fg=self.theme["accent"])
-        self.settings_btn.configure(bg=self.theme["card_bg"], fg=self.theme["glow"])
-        self.close_btn.configure(bg=self.theme["card_bg"], fg=self.theme["glow"])
+        try:
+            self.clock_label.configure(bg=self.theme["card_bg"], fg=self.theme["accent"])
+            self.timer_label.configure(bg=self.theme["card_bg"], fg=self.theme["timer"])
+            self.breakdown_label.configure(bg=self.theme["card_bg"], fg=self.theme["accent"])
+            self.stats_label.configure(bg=self.theme["card_bg"], fg=self.theme["accent"])
+            self.settings_btn.configure(bg=self.theme["card_bg"], fg=self.theme["glow"])
+            self.close_btn.configure(bg=self.theme["card_bg"], fg=self.theme["glow"])
+        except:
+            pass
         
         # Update notebook style
         self.update_notebook_style()
