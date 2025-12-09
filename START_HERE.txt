@@ -1,0 +1,133 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║              📚 STUDY TIMER PRO - START HERE 📚                  ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+👋 Welcome! Let's get you set up in 5 minutes.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 STEP 1: Install Python Packages
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Open Command Prompt in this folder and type:
+
+    pip install -r requirements.txt
+
+Then press Enter and wait for installation to complete.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 STEP 2: Test the App
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type:
+
+    python study_timer_pro.py
+
+A small timer widget should appear! If it works, close it and continue.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🖱️ STEP 3: Create Desktop Shortcut
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Double-click this file:
+
+    📄 create_desktop_shortcut.bat
+
+A shortcut will appear on your desktop!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 STEP 4: Pin to Taskbar (Recommended)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Find "Study Timer Pro" shortcut on your desktop
+2. Right-click it
+3. Click "Pin to taskbar"
+
+Now you have one-click access!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⌨️ STEP 5: Set Keyboard Shortcut (Optional)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Want to press Ctrl+Alt+S to summon the timer?
+
+1. Right-click the desktop shortcut
+2. Click "Properties"
+3. Click in "Shortcut key" field
+4. Press Ctrl+Alt+S
+5. Click OK
+
+Now press Ctrl+Alt+S anywhere to open the app!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 STEP 6: Auto-Start with Windows (Optional)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Want the app to start automatically when Windows boots?
+
+Double-click this file:
+
+    📄 add_to_startup.bat
+
+The app will now start with Windows (minimized in system tray).
+
+To remove later, double-click:
+
+    📄 remove_from_startup.bat
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ YOU'RE DONE! Here's How to Use It:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 BASIC USAGE:
+
+1. Launch the app (desktop shortcut, taskbar, or Ctrl+Alt+S)
+2. Click ⚙️ (gear icon) to open controls
+3. Go to "⚡ Presets" tab
+4. Click "🍅 Pomodoro" to start a 25-minute timer
+5. Click X to minimize to system tray
+6. Timer keeps running in the background!
+
+🖱️ SYSTEM TRAY:
+
+• Click X button → App hides to tray (near clock)
+• Double-click tray icon → Show app
+• Right-click tray icon → Quick menu
+
+⌨️ KEYBOARD SHORTCUTS:
+
+• Ctrl+Alt+S → Summon app (if you set it up)
+• Space → Start/Pause timer
+• R → Reset timer
+• Esc → Show/Hide controls
+
+🎨 THEMES:
+
+Click ⚙️ → Settings → Choose from 6 beautiful themes:
+• 🌙 Midnight Focus
+• 🌅 Sunrise Energy
+• 🌲 Forest Calm
+• ☕ Coffee Break
+• 🌊 Ocean Depth
+• ⚫ Minimal Dark
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 NEED MORE HELP?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 Read SETUP_INSTRUCTIONS.md for detailed step-by-step guide
+📖 Read QUICK_START.md for quick reference
+📖 Read README.md for full documentation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 Happy Studying! 📚✨
